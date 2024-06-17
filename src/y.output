@@ -1,0 +1,1969 @@
+
+state 0
+	$accept : _ChunkList $end 
+	ChunkList : _    (1)
+
+	.  reduce 1
+
+	ChunkList  goto 1
+
+state 1
+	$accept :  ChunkList_$end 
+	ChunkList :  ChunkList_Chunk 
+
+	$end  accept
+	error  shift 5
+	IDENTIFIER  shift 6
+	{  shift 4
+	.  error
+
+	VariableName  goto 3
+	Chunk  goto 2
+
+state 2
+	ChunkList :  ChunkList Chunk_    (2)
+
+	.  reduce 2
+
+
+state 3
+	Chunk :  VariableName_KEYWORD # VariableName KEYWORD StringConstant KEYWORD StringConstant KEYWORD StringConstant KEYWORD StringConstant ! 
+	Chunk :  VariableName_KEYWORD STRING ! $$4 Methods Sep 
+	Chunk :  VariableName_VariableName KEYWORD STRING ! $$6 Methods Sep 
+
+	IDENTIFIER  shift 6
+	KEYWORD  shift 7
+	.  error
+
+	VariableName  goto 8
+
+state 4
+	Chunk :  {_InferenceRule } 
+	Chunk :  {_error } 
+	OptionalType : _    (123)
+
+	error  shift 10
+	#  shift 11
+	(  shift 15
+	.  reduce 123
+
+	Template  goto 12
+	InferenceRule  goto 9
+	OptionalType  goto 14
+	TemplateType  goto 13
+
+state 5
+	Chunk :  error_! 
+
+	!  shift 16
+	.  error
+
+
+state 6
+	VariableName :  IDENTIFIER_    (126)
+
+	.  reduce 126
+
+
+state 7
+	Chunk :  VariableName KEYWORD_# VariableName KEYWORD StringConstant KEYWORD StringConstant KEYWORD StringConstant KEYWORD StringConstant ! 
+	Chunk :  VariableName KEYWORD_STRING ! $$4 Methods Sep 
+
+	STRING  shift 18
+	#  shift 17
+	.  error
+
+
+state 8
+	Chunk :  VariableName VariableName_KEYWORD STRING ! $$6 Methods Sep 
+
+	KEYWORD  shift 19
+	.  error
+
+
+state 9
+	Chunk :  { InferenceRule_} 
+
+	}  shift 20
+	.  error
+
+
+state 10
+	Chunk :  { error_} 
+
+	}  shift 21
+	.  error
+
+
+state 11
+	InferenceRule :  #_PatternType [ ObjcMsgPattern ] 
+	InferenceRule :  #_VariableName PatternType VariableName 
+	OptionalType : _    (123)
+
+	IDENTIFIER  shift 6
+	(  shift 15
+	.  reduce 123
+
+	VariableName  goto 23
+	OptionalType  goto 24
+	PatternType  goto 22
+
+state 12
+	InferenceRule :  Template_# PatternType [ ObjcMsgPattern ] 
+	InferenceRule :  Template_# PatternType ObjcFunctionPattern 
+	InferenceRule :  Template_# PatternType StringConstant 
+
+	#  shift 25
+	.  error
+
+
+state 13
+	Template :  TemplateType_UnarySelector 
+	Template :  TemplateType_BinarySelector TemplateType 
+	Template :  TemplateType_KeywordPattern 
+
+	IDENTIFIER  shift 29
+	KEYWORD  shift 48
+	DOUBLESPECIAL  shift 32
+	%  shift 43
+	|  shift 47
+	&  shift 44
+	?  shift 45
+	,  shift 46
+	+  shift 34
+	-  shift 30
+	/  shift 35
+	\\  shift 36
+	*  shift 37
+	~  shift 38
+	<  shift 39
+	>  shift 40
+	=  shift 41
+	@  shift 42
+	.  error
+
+	Keyword  goto 33
+	BinarySelector  goto 27
+	UnarySelector  goto 26
+	KeywordPattern  goto 28
+	SpecialCharacter  goto 31
+
+state 14
+	TemplateType :  OptionalType_    (122)
+
+	.  reduce 122
+
+
+state 15
+	OptionalType :  (_Type ) 
+
+	IDENTIFIER  shift 50
+	.  error
+
+	Type  goto 49
+
+state 16
+	Chunk :  error !_    (10)
+
+	.  reduce 10
+
+
+state 17
+	Chunk :  VariableName KEYWORD #_VariableName KEYWORD StringConstant KEYWORD StringConstant KEYWORD StringConstant KEYWORD StringConstant ! 
+
+	IDENTIFIER  shift 6
+	.  error
+
+	VariableName  goto 51
+
+state 18
+	Chunk :  VariableName KEYWORD STRING_! $$4 Methods Sep 
+
+	!  shift 52
+	.  error
+
+
+state 19
+	Chunk :  VariableName VariableName KEYWORD_STRING ! $$6 Methods Sep 
+
+	STRING  shift 53
+	.  error
+
+
+state 20
+	Chunk :  { InferenceRule }_    (8)
+
+	.  reduce 8
+
+
+state 21
+	Chunk :  { error }_    (9)
+
+	.  reduce 9
+
+
+state 22
+	InferenceRule :  # PatternType_[ ObjcMsgPattern ] 
+
+	[  shift 54
+	.  error
+
+
+state 23
+	InferenceRule :  # VariableName_PatternType VariableName 
+	OptionalType : _    (123)
+
+	(  shift 15
+	.  reduce 123
+
+	OptionalType  goto 24
+	PatternType  goto 55
+
+state 24
+	PatternType :  OptionalType_    (121)
+
+	.  reduce 121
+
+
+state 25
+	InferenceRule :  Template #_PatternType [ ObjcMsgPattern ] 
+	InferenceRule :  Template #_PatternType ObjcFunctionPattern 
+	InferenceRule :  Template #_PatternType StringConstant 
+	OptionalType : _    (123)
+
+	(  shift 15
+	.  reduce 123
+
+	OptionalType  goto 24
+	PatternType  goto 56
+
+state 26
+	Template :  TemplateType UnarySelector_    (87)
+
+	.  reduce 87
+
+
+state 27
+	Template :  TemplateType BinarySelector_TemplateType 
+	OptionalType : _    (123)
+
+	(  shift 15
+	.  reduce 123
+
+	OptionalType  goto 14
+	TemplateType  goto 57
+
+state 28
+	Template :  TemplateType KeywordPattern_    (89)
+	KeywordPattern :  KeywordPattern_Keyword PatternType 
+
+	KEYWORD  shift 48
+	.  reduce 89
+
+	Keyword  goto 58
+
+state 29
+	UnarySelector :  IDENTIFIER_    (127)
+
+	.  reduce 127
+
+
+state 30
+	BinarySelector :  -_    (104)
+
+	.  reduce 104
+
+
+state 31
+	BinarySelector :  SpecialCharacter_    (105)
+
+	.  reduce 105
+
+
+state 32
+	BinarySelector :  DOUBLESPECIAL_    (106)
+
+	.  reduce 106
+
+
+state 33
+	KeywordPattern :  Keyword_PatternType 
+	OptionalType : _    (123)
+
+	(  shift 15
+	.  reduce 123
+
+	OptionalType  goto 24
+	PatternType  goto 59
+
+state 34
+	SpecialCharacter :  +_    (107)
+
+	.  reduce 107
+
+
+state 35
+	SpecialCharacter :  /_    (108)
+
+	.  reduce 108
+
+
+state 36
+	SpecialCharacter :  \\_    (109)
+
+	.  reduce 109
+
+
+state 37
+	SpecialCharacter :  *_    (110)
+
+	.  reduce 110
+
+
+state 38
+	SpecialCharacter :  ~_    (111)
+
+	.  reduce 111
+
+
+state 39
+	SpecialCharacter :  <_    (112)
+
+	.  reduce 112
+
+
+state 40
+	SpecialCharacter :  >_    (113)
+
+	.  reduce 113
+
+
+state 41
+	SpecialCharacter :  =_    (114)
+
+	.  reduce 114
+
+
+state 42
+	SpecialCharacter :  @_    (115)
+
+	.  reduce 115
+
+
+state 43
+	SpecialCharacter :  %_    (116)
+
+	.  reduce 116
+
+
+state 44
+	SpecialCharacter :  &_    (117)
+
+	.  reduce 117
+
+
+state 45
+	SpecialCharacter :  ?_    (118)
+
+	.  reduce 118
+
+
+state 46
+	SpecialCharacter :  ,_    (119)
+
+	.  reduce 119
+
+
+state 47
+	SpecialCharacter :  |_    (120)
+
+	.  reduce 120
+
+
+state 48
+	Keyword :  KEYWORD_    (132)
+
+	.  reduce 132
+
+
+state 49
+	OptionalType :  ( Type_) 
+
+	)  shift 60
+	.  error
+
+
+state 50
+	Type :  IDENTIFIER_    (125)
+
+	.  reduce 125
+
+
+state 51
+	Chunk :  VariableName KEYWORD # VariableName_KEYWORD StringConstant KEYWORD StringConstant KEYWORD StringConstant KEYWORD StringConstant ! 
+
+	KEYWORD  shift 61
+	.  error
+
+
+state 52
+	Chunk :  VariableName KEYWORD STRING !_$$4 Methods Sep 
+	$$4 : _    (4)
+
+	.  reduce 4
+
+	$$4  goto 62
+
+state 53
+	Chunk :  VariableName VariableName KEYWORD STRING_! $$6 Methods Sep 
+
+	!  shift 63
+	.  error
+
+
+state 54
+	InferenceRule :  # PatternType [_ObjcMsgPattern ] 
+	OptionalType : _    (123)
+
+	(  shift 15
+	.  reduce 123
+
+	ObjcMsgPattern  goto 64
+	OptionalType  goto 24
+	PatternType  goto 65
+
+state 55
+	InferenceRule :  # VariableName PatternType_VariableName 
+
+	IDENTIFIER  shift 6
+	.  error
+
+	VariableName  goto 66
+
+state 56
+	InferenceRule :  Template # PatternType_[ ObjcMsgPattern ] 
+	InferenceRule :  Template # PatternType_ObjcFunctionPattern 
+	InferenceRule :  Template # PatternType_StringConstant 
+
+	IDENTIFIER  shift 6
+	STRING  shift 71
+	[  shift 67
+	.  error
+
+	VariableName  goto 70
+	ObjcFunctionPattern  goto 68
+	StringConstant  goto 69
+
+state 57
+	Template :  TemplateType BinarySelector TemplateType_    (88)
+
+	.  reduce 88
+
+
+state 58
+	KeywordPattern :  KeywordPattern Keyword_PatternType 
+	OptionalType : _    (123)
+
+	(  shift 15
+	.  reduce 123
+
+	OptionalType  goto 24
+	PatternType  goto 72
+
+state 59
+	KeywordPattern :  Keyword PatternType_    (90)
+
+	.  reduce 90
+
+
+state 60
+	OptionalType :  ( Type )_    (124)
+
+	.  reduce 124
+
+
+state 61
+	Chunk :  VariableName KEYWORD # VariableName KEYWORD_StringConstant KEYWORD StringConstant KEYWORD StringConstant KEYWORD StringConstant ! 
+
+	STRING  shift 71
+	.  error
+
+	StringConstant  goto 73
+
+state 62
+	Chunk :  VariableName KEYWORD STRING ! $$4_Methods Sep 
+	Methods : _    (13)
+
+	.  reduce 13
+
+	Methods  goto 74
+
+state 63
+	Chunk :  VariableName VariableName KEYWORD STRING !_$$6 Methods Sep 
+	$$6 : _    (6)
+
+	.  reduce 6
+
+	$$6  goto 75
+
+state 64
+	InferenceRule :  # PatternType [ ObjcMsgPattern_] 
+
+	]  shift 76
+	.  error
+
+
+state 65
+	ObjcMsgPattern :  PatternType_UnarySelector 
+	ObjcMsgPattern :  PatternType_ObjcKeywordPattern 
+
+	IDENTIFIER  shift 29
+	KEYWORD  shift 48
+	.  error
+
+	Keyword  goto 79
+	UnarySelector  goto 77
+	ObjcKeywordPattern  goto 78
+
+state 66
+	InferenceRule :  # VariableName PatternType VariableName_    (86)
+
+	.  reduce 86
+
+
+state 67
+	InferenceRule :  Template # PatternType [_ObjcMsgPattern ] 
+	OptionalType : _    (123)
+
+	(  shift 15
+	.  reduce 123
+
+	ObjcMsgPattern  goto 80
+	OptionalType  goto 24
+	PatternType  goto 65
+
+state 68
+	InferenceRule :  Template # PatternType ObjcFunctionPattern_    (84)
+
+	.  reduce 84
+
+
+state 69
+	InferenceRule :  Template # PatternType StringConstant_    (85)
+
+	.  reduce 85
+
+
+state 70
+	ObjcFunctionPattern :  VariableName_( ObjcFunctionArgList ) 
+	ObjcFunctionPattern :  VariableName_( ) 
+
+	(  shift 81
+	.  error
+
+
+state 71
+	StringConstant :  STRING_    (131)
+
+	.  reduce 131
+
+
+state 72
+	KeywordPattern :  KeywordPattern Keyword PatternType_    (91)
+
+	.  reduce 91
+
+
+state 73
+	Chunk :  VariableName KEYWORD # VariableName KEYWORD StringConstant_KEYWORD StringConstant KEYWORD StringConstant KEYWORD StringConstant ! 
+
+	KEYWORD  shift 82
+	.  error
+
+
+state 74
+	Chunk :  VariableName KEYWORD STRING ! $$4 Methods_Sep 
+	Methods :  Methods_Method ! 
+	Methods :  Methods_error ! 
+
+	error  shift 85
+	IDENTIFIER  shift 29
+	KEYWORD  shift 48
+	DOUBLESPECIAL  shift 32
+	%  shift 43
+	|  shift 47
+	&  shift 44
+	?  shift 45
+	!  shift 86
+	,  shift 46
+	+  shift 34
+	-  shift 30
+	/  shift 35
+	\\  shift 36
+	*  shift 37
+	~  shift 38
+	<  shift 39
+	>  shift 40
+	=  shift 41
+	@  shift 42
+	.  error
+
+	Method  goto 84
+	MethodName  goto 87
+	Keyword  goto 91
+	KwdMethodDecl  goto 90
+	BinarySelector  goto 89
+	UnarySelector  goto 88
+	SpecialCharacter  goto 31
+	Sep  goto 83
+
+state 75
+	Chunk :  VariableName VariableName KEYWORD STRING ! $$6_Methods Sep 
+	Methods : _    (13)
+
+	.  reduce 13
+
+	Methods  goto 92
+
+state 76
+	InferenceRule :  # PatternType [ ObjcMsgPattern ]_    (82)
+
+	.  reduce 82
+
+
+state 77
+	ObjcMsgPattern :  PatternType UnarySelector_    (96)
+
+	.  reduce 96
+
+
+state 78
+	ObjcMsgPattern :  PatternType ObjcKeywordPattern_    (97)
+	ObjcKeywordPattern :  ObjcKeywordPattern_Keyword PatternType ParameterDesignator 
+
+	KEYWORD  shift 48
+	.  reduce 97
+
+	Keyword  goto 93
+
+state 79
+	ObjcKeywordPattern :  Keyword_PatternType ParameterDesignator 
+	OptionalType : _    (123)
+
+	(  shift 15
+	.  reduce 123
+
+	OptionalType  goto 24
+	PatternType  goto 94
+
+state 80
+	InferenceRule :  Template # PatternType [ ObjcMsgPattern_] 
+
+	]  shift 95
+	.  error
+
+
+state 81
+	ObjcFunctionPattern :  VariableName (_ObjcFunctionArgList ) 
+	ObjcFunctionPattern :  VariableName (_) 
+	OptionalType : _    (123)
+
+	(  shift 15
+	)  shift 97
+	.  reduce 123
+
+	ObjcFunctionArgList  goto 96
+	OptionalType  goto 24
+	PatternType  goto 98
+
+state 82
+	Chunk :  VariableName KEYWORD # VariableName KEYWORD StringConstant KEYWORD_StringConstant KEYWORD StringConstant KEYWORD StringConstant ! 
+
+	STRING  shift 71
+	.  error
+
+	StringConstant  goto 99
+
+state 83
+	Chunk :  VariableName KEYWORD STRING ! $$4 Methods Sep_    (5)
+	Sep :  Sep_! 
+
+	!  shift 100
+	.  reduce 5
+
+
+state 84
+	Methods :  Methods Method_! 
+
+	!  shift 101
+	.  error
+
+
+state 85
+	Methods :  Methods error_! 
+
+	!  shift 102
+	.  error
+
+
+state 86
+	Sep :  !_    (11)
+
+	.  reduce 11
+
+
+state 87
+	Method :  MethodName_LocalVariables $$16 PrimMarker StmtList 
+	LocalVariables : _    (23)
+
+	|  shift 104
+	.  reduce 23
+
+	LocalVariables  goto 103
+
+state 88
+	MethodName :  UnarySelector_    (18)
+
+	.  reduce 18
+
+
+state 89
+	MethodName :  BinarySelector_VariableName 
+
+	IDENTIFIER  shift 6
+	.  error
+
+	VariableName  goto 105
+
+state 90
+	MethodName :  KwdMethodDecl_    (20)
+	KwdMethodDecl :  KwdMethodDecl_Keyword VariableName 
+
+	KEYWORD  shift 48
+	.  reduce 20
+
+	Keyword  goto 106
+
+state 91
+	KwdMethodDecl :  Keyword_VariableName 
+
+	IDENTIFIER  shift 6
+	.  error
+
+	VariableName  goto 107
+
+state 92
+	Chunk :  VariableName VariableName KEYWORD STRING ! $$6 Methods_Sep 
+	Methods :  Methods_Method ! 
+	Methods :  Methods_error ! 
+
+	error  shift 85
+	IDENTIFIER  shift 29
+	KEYWORD  shift 48
+	DOUBLESPECIAL  shift 32
+	%  shift 43
+	|  shift 47
+	&  shift 44
+	?  shift 45
+	!  shift 86
+	,  shift 46
+	+  shift 34
+	-  shift 30
+	/  shift 35
+	\\  shift 36
+	*  shift 37
+	~  shift 38
+	<  shift 39
+	>  shift 40
+	=  shift 41
+	@  shift 42
+	.  error
+
+	Method  goto 84
+	MethodName  goto 87
+	Keyword  goto 91
+	KwdMethodDecl  goto 90
+	BinarySelector  goto 89
+	UnarySelector  goto 88
+	SpecialCharacter  goto 31
+	Sep  goto 108
+
+state 93
+	ObjcKeywordPattern :  ObjcKeywordPattern Keyword_PatternType ParameterDesignator 
+	OptionalType : _    (123)
+
+	(  shift 15
+	.  reduce 123
+
+	OptionalType  goto 24
+	PatternType  goto 109
+
+state 94
+	ObjcKeywordPattern :  Keyword PatternType_ParameterDesignator 
+
+	IDENTIFIER  shift 6
+	%  shift 112
+	.  error
+
+	VariableName  goto 111
+	ParameterDesignator  goto 110
+
+state 95
+	InferenceRule :  Template # PatternType [ ObjcMsgPattern ]_    (83)
+
+	.  reduce 83
+
+
+state 96
+	ObjcFunctionPattern :  VariableName ( ObjcFunctionArgList_) 
+	ObjcFunctionArgList :  ObjcFunctionArgList_, PatternType ParameterDesignator 
+
+	,  shift 114
+	)  shift 113
+	.  error
+
+
+state 97
+	ObjcFunctionPattern :  VariableName ( )_    (93)
+
+	.  reduce 93
+
+
+state 98
+	ObjcFunctionArgList :  PatternType_ParameterDesignator 
+
+	IDENTIFIER  shift 6
+	%  shift 112
+	.  error
+
+	VariableName  goto 111
+	ParameterDesignator  goto 115
+
+state 99
+	Chunk :  VariableName KEYWORD # VariableName KEYWORD StringConstant KEYWORD StringConstant_KEYWORD StringConstant KEYWORD StringConstant ! 
+
+	KEYWORD  shift 116
+	.  error
+
+
+state 100
+	Sep :  Sep !_    (12)
+
+	.  reduce 12
+
+
+state 101
+	Methods :  Methods Method !_    (14)
+
+	.  reduce 14
+
+
+state 102
+	Methods :  Methods error !_    (15)
+
+	.  reduce 15
+
+
+state 103
+	Method :  MethodName LocalVariables_$$16 PrimMarker StmtList 
+	$$16 : _    (16)
+
+	.  reduce 16
+
+	$$16  goto 117
+
+state 104
+	LocalVariables :  |_VarList | 
+	VarList : _    (25)
+
+	.  reduce 25
+
+	VarList  goto 118
+
+state 105
+	MethodName :  BinarySelector VariableName_    (19)
+
+	.  reduce 19
+
+
+state 106
+	KwdMethodDecl :  KwdMethodDecl Keyword_VariableName 
+
+	IDENTIFIER  shift 6
+	.  error
+
+	VariableName  goto 119
+
+state 107
+	KwdMethodDecl :  Keyword VariableName_    (27)
+
+	.  reduce 27
+
+
+state 108
+	Chunk :  VariableName VariableName KEYWORD STRING ! $$6 Methods Sep_    (7)
+	Sep :  Sep_! 
+
+	!  shift 100
+	.  reduce 7
+
+
+state 109
+	ObjcKeywordPattern :  ObjcKeywordPattern Keyword PatternType_ParameterDesignator 
+
+	IDENTIFIER  shift 6
+	%  shift 112
+	.  error
+
+	VariableName  goto 111
+	ParameterDesignator  goto 120
+
+state 110
+	ObjcKeywordPattern :  Keyword PatternType ParameterDesignator_    (98)
+
+	.  reduce 98
+
+
+state 111
+	ParameterDesignator :  VariableName_    (100)
+
+	.  reduce 100
+
+
+state 112
+	ParameterDesignator :  %_DIGITS 
+
+	DIGITS  shift 121
+	.  error
+
+
+state 113
+	ObjcFunctionPattern :  VariableName ( ObjcFunctionArgList )_    (92)
+
+	.  reduce 92
+
+
+state 114
+	ObjcFunctionArgList :  ObjcFunctionArgList ,_PatternType ParameterDesignator 
+	OptionalType : _    (123)
+
+	(  shift 15
+	.  reduce 123
+
+	OptionalType  goto 24
+	PatternType  goto 122
+
+state 115
+	ObjcFunctionArgList :  PatternType ParameterDesignator_    (94)
+
+	.  reduce 94
+
+
+state 116
+	Chunk :  VariableName KEYWORD # VariableName KEYWORD StringConstant KEYWORD StringConstant KEYWORD_StringConstant KEYWORD StringConstant ! 
+
+	STRING  shift 71
+	.  error
+
+	StringConstant  goto 123
+
+state 117
+	Method :  MethodName LocalVariables $$16_PrimMarker StmtList 
+	PrimMarker : _    (21)
+
+	<  shift 125
+	.  reduce 21
+
+	PrimMarker  goto 124
+
+state 118
+	LocalVariables :  | VarList_| 
+	VarList :  VarList_VariableName 
+
+	IDENTIFIER  shift 6
+	|  shift 126
+	.  error
+
+	VariableName  goto 127
+
+state 119
+	KwdMethodDecl :  KwdMethodDecl Keyword VariableName_    (28)
+
+	.  reduce 28
+
+
+state 120
+	ObjcKeywordPattern :  ObjcKeywordPattern Keyword PatternType ParameterDesignator_    (99)
+
+	.  reduce 99
+
+
+state 121
+	ParameterDesignator :  % DIGITS_    (101)
+
+	.  reduce 101
+
+
+state 122
+	ObjcFunctionArgList :  ObjcFunctionArgList , PatternType_ParameterDesignator 
+
+	IDENTIFIER  shift 6
+	%  shift 112
+	.  error
+
+	VariableName  goto 111
+	ParameterDesignator  goto 128
+
+state 123
+	Chunk :  VariableName KEYWORD # VariableName KEYWORD StringConstant KEYWORD StringConstant KEYWORD StringConstant_KEYWORD StringConstant ! 
+
+	KEYWORD  shift 129
+	.  error
+
+
+state 124
+	Method :  MethodName LocalVariables $$16 PrimMarker_StmtList 
+	AssignmentList : _    (37)
+
+	error  shift 133
+	^  shift 131
+	.  reduce 37
+
+	StmtList  goto 130
+	Expr  goto 132
+	AssignmentList  goto 134
+
+state 125
+	PrimMarker :  <_KEYWORD NumberConstant > 
+
+	KEYWORD  shift 135
+	.  error
+
+
+state 126
+	LocalVariables :  | VarList |_    (24)
+
+	.  reduce 24
+
+
+state 127
+	VarList :  VarList VariableName_    (26)
+
+	.  reduce 26
+
+
+state 128
+	ObjcFunctionArgList :  ObjcFunctionArgList , PatternType ParameterDesignator_    (95)
+
+	.  reduce 95
+
+
+state 129
+	Chunk :  VariableName KEYWORD # VariableName KEYWORD StringConstant KEYWORD StringConstant KEYWORD StringConstant KEYWORD_StringConstant ! 
+
+	STRING  shift 71
+	.  error
+
+	StringConstant  goto 136
+
+state 130
+	Method :  MethodName LocalVariables $$16 PrimMarker StmtList_    (17)
+
+	.  reduce 17
+
+
+state 131
+	StmtList :  ^_Expr 
+	AssignmentList : _    (37)
+
+	.  reduce 37
+
+	Expr  goto 137
+	AssignmentList  goto 134
+
+state 132
+	StmtList :  Expr_    (30)
+	StmtList :  Expr_. 
+	StmtList :  Expr_. StmtList 
+
+	.  shift 138
+	.  reduce 30
+
+
+state 133
+	StmtList :  error_. 
+
+	.  shift 139
+	.  error
+
+
+state 134
+	Expr :  AssignmentList_Primary 
+	Expr :  AssignmentList_SimpleMsgExpr 
+	Expr :  AssignmentList_SimpleMsgExpr CascadedMsgExpr 
+	AssignmentList :  AssignmentList_VariableName _ 
+
+	IDENTIFIER  shift 6
+	DIGITS  shift 157
+	STRING  shift 71
+	CHARCON  shift 156
+	#  shift 152
+	-  shift 158
+	(  shift 145
+	[  shift 153
+	.  error
+
+	Primary  goto 140
+	UnaryObjDesc  goto 154
+	BinaryObjDesc  goto 155
+	SimpleMsgExpr  goto 141
+	UnaryExpr  goto 146
+	BinaryExpr  goto 147
+	KeywordExpr  goto 148
+	Literal  goto 143
+	Block  goto 144
+	VariableName  goto 142
+	CharacterConstant  goto 149
+	NumberConstant  goto 151
+	StringConstant  goto 150
+
+state 135
+	PrimMarker :  < KEYWORD_NumberConstant > 
+
+	DIGITS  shift 157
+	-  shift 158
+	.  error
+
+	NumberConstant  goto 159
+
+state 136
+	Chunk :  VariableName KEYWORD # VariableName KEYWORD StringConstant KEYWORD StringConstant KEYWORD StringConstant KEYWORD StringConstant_! 
+
+	!  shift 160
+	.  error
+
+
+state 137
+	StmtList :  ^ Expr_    (29)
+
+	.  reduce 29
+
+
+state 138
+	StmtList :  Expr ._    (31)
+	StmtList :  Expr ._StmtList 
+	AssignmentList : _    (37)
+
+	error  shift 133
+	!  reduce 31
+	^  shift 131
+	]  reduce 31
+	.  reduce 37
+
+	StmtList  goto 161
+	Expr  goto 132
+	AssignmentList  goto 134
+
+state 139
+	StmtList :  error ._    (33)
+
+	.  reduce 33
+
+
+state 140
+	Expr :  AssignmentList Primary_    (34)
+	UnaryObjDesc :  Primary_    (51)
+
+	!  reduce 34
+	.  reduce 34
+	)  reduce 34
+	]  reduce 34
+	.  reduce 51
+
+
+state 141
+	Expr :  AssignmentList SimpleMsgExpr_    (35)
+	Expr :  AssignmentList SimpleMsgExpr_CascadedMsgExpr 
+
+	;  shift 164
+	.  reduce 35
+
+	CascadedMsgExpr  goto 162
+	CascadedMsg  goto 163
+
+state 142
+	AssignmentList :  AssignmentList VariableName__ 
+	Primary :  VariableName_    (44)
+
+	_  shift 165
+	.  reduce 44
+
+
+state 143
+	Primary :  Literal_    (45)
+
+	.  reduce 45
+
+
+state 144
+	Primary :  Block_    (46)
+
+	.  reduce 46
+
+
+state 145
+	Primary :  (_Expr ) 
+	AssignmentList : _    (37)
+
+	.  reduce 37
+
+	Expr  goto 166
+	AssignmentList  goto 134
+
+state 146
+	SimpleMsgExpr :  UnaryExpr_    (48)
+	UnaryObjDesc :  UnaryExpr_    (52)
+
+	!  reduce 48
+	.  reduce 48
+	;  reduce 48
+	)  reduce 48
+	]  reduce 48
+	.  reduce 52
+
+
+state 147
+	SimpleMsgExpr :  BinaryExpr_    (49)
+	BinaryObjDesc :  BinaryExpr_    (55)
+
+	!  reduce 49
+	.  reduce 49
+	;  reduce 49
+	)  reduce 49
+	]  reduce 49
+	.  reduce 55
+
+
+state 148
+	SimpleMsgExpr :  KeywordExpr_    (50)
+
+	.  reduce 50
+
+
+state 149
+	Literal :  CharacterConstant_    (60)
+
+	.  reduce 60
+
+
+state 150
+	Literal :  StringConstant_    (61)
+
+	.  reduce 61
+
+
+state 151
+	Literal :  NumberConstant_    (62)
+
+	.  reduce 62
+
+
+state 152
+	Literal :  #_( ArrayMemberList ) 
+	Literal :  #_UnarySelector 
+	Literal :  #_BinarySelector 
+	Literal :  #_KeywordList 
+
+	IDENTIFIER  shift 29
+	KEYWORD  shift 171
+	DOUBLESPECIAL  shift 32
+	%  shift 43
+	|  shift 47
+	&  shift 44
+	?  shift 45
+	,  shift 46
+	+  shift 34
+	-  shift 30
+	/  shift 35
+	\\  shift 36
+	*  shift 37
+	~  shift 38
+	<  shift 39
+	>  shift 40
+	=  shift 41
+	@  shift 42
+	(  shift 167
+	.  error
+
+	BinarySelector  goto 169
+	UnarySelector  goto 168
+	KeywordList  goto 170
+	SpecialCharacter  goto 31
+
+state 153
+	Block :  [_BlockVariables StmtList ] 
+	Block :  [_BlockVariables ] 
+	BlockVariables : _    (78)
+
+	:  shift 174
+	.  reduce 78
+
+	BlockVarList  goto 173
+	BlockVariables  goto 172
+
+state 154
+	UnaryExpr :  UnaryObjDesc_UnarySelector 
+	BinaryObjDesc :  UnaryObjDesc_    (54)
+
+	IDENTIFIER  shift 29
+	.  reduce 54
+
+	UnarySelector  goto 175
+
+state 155
+	BinaryExpr :  BinaryObjDesc_BinarySelector UnaryObjDesc 
+	KeywordExpr :  BinaryObjDesc_KeywordArgList 
+
+	KEYWORD  shift 48
+	DOUBLESPECIAL  shift 32
+	%  shift 43
+	|  shift 47
+	&  shift 44
+	?  shift 45
+	,  shift 46
+	+  shift 34
+	-  shift 30
+	/  shift 35
+	\\  shift 36
+	*  shift 37
+	~  shift 38
+	<  shift 39
+	>  shift 40
+	=  shift 41
+	@  shift 42
+	.  error
+
+	Keyword  goto 178
+	KeywordArgList  goto 177
+	BinarySelector  goto 176
+	SpecialCharacter  goto 31
+
+state 156
+	CharacterConstant :  CHARCON_    (128)
+
+	.  reduce 128
+
+
+state 157
+	NumberConstant :  DIGITS_    (129)
+
+	.  reduce 129
+
+
+state 158
+	NumberConstant :  -_DIGITS 
+
+	DIGITS  shift 179
+	.  error
+
+
+state 159
+	PrimMarker :  < KEYWORD NumberConstant_> 
+
+	>  shift 180
+	.  error
+
+
+state 160
+	Chunk :  VariableName KEYWORD # VariableName KEYWORD StringConstant KEYWORD StringConstant KEYWORD StringConstant KEYWORD StringConstant !_    (3)
+
+	.  reduce 3
+
+
+state 161
+	StmtList :  Expr . StmtList_    (32)
+
+	.  reduce 32
+
+
+state 162
+	Expr :  AssignmentList SimpleMsgExpr CascadedMsgExpr_    (36)
+	CascadedMsgExpr :  CascadedMsgExpr_CascadedMsg 
+
+	;  shift 164
+	.  reduce 36
+
+	CascadedMsg  goto 181
+
+state 163
+	CascadedMsgExpr :  CascadedMsg_    (39)
+
+	.  reduce 39
+
+
+state 164
+	CascadedMsg :  ;_UnarySelector 
+	CascadedMsg :  ;_BinarySelector UnaryObjDesc 
+	CascadedMsg :  ;_KeywordArgList 
+
+	IDENTIFIER  shift 29
+	KEYWORD  shift 48
+	DOUBLESPECIAL  shift 32
+	%  shift 43
+	|  shift 47
+	&  shift 44
+	?  shift 45
+	,  shift 46
+	+  shift 34
+	-  shift 30
+	/  shift 35
+	\\  shift 36
+	*  shift 37
+	~  shift 38
+	<  shift 39
+	>  shift 40
+	=  shift 41
+	@  shift 42
+	.  error
+
+	Keyword  goto 178
+	KeywordArgList  goto 184
+	BinarySelector  goto 183
+	UnarySelector  goto 182
+	SpecialCharacter  goto 31
+
+state 165
+	AssignmentList :  AssignmentList VariableName __    (38)
+
+	.  reduce 38
+
+
+state 166
+	Primary :  ( Expr_) 
+
+	)  shift 185
+	.  error
+
+
+state 167
+	Literal :  # (_ArrayMemberList ) 
+	ArrayMemberList : _    (67)
+
+	.  reduce 67
+
+	ArrayMemberList  goto 186
+
+state 168
+	Literal :  # UnarySelector_    (64)
+
+	.  reduce 64
+
+
+state 169
+	Literal :  # BinarySelector_    (65)
+
+	.  reduce 65
+
+
+170: shift/reduce conflict (shift 187, red'n 66) on KEYWORD
+state 170
+	Literal :  # KeywordList_    (66)
+	KeywordList :  KeywordList_KEYWORD 
+
+	KEYWORD  shift 187
+	.  reduce 66
+
+
+state 171
+	KeywordList :  KEYWORD_    (102)
+
+	.  reduce 102
+
+
+state 172
+	Block :  [ BlockVariables_StmtList ] 
+	Block :  [ BlockVariables_] 
+	AssignmentList : _    (37)
+
+	error  shift 133
+	^  shift 131
+	]  shift 189
+	.  reduce 37
+
+	StmtList  goto 188
+	Expr  goto 132
+	AssignmentList  goto 134
+
+state 173
+	BlockVariables :  BlockVarList_| 
+	BlockVarList :  BlockVarList_: VariableName 
+
+	|  shift 190
+	:  shift 191
+	.  error
+
+
+state 174
+	BlockVarList :  :_VariableName 
+
+	IDENTIFIER  shift 6
+	.  error
+
+	VariableName  goto 192
+
+state 175
+	UnaryExpr :  UnaryObjDesc UnarySelector_    (53)
+
+	.  reduce 53
+
+
+state 176
+	BinaryExpr :  BinaryObjDesc BinarySelector_UnaryObjDesc 
+
+	IDENTIFIER  shift 6
+	DIGITS  shift 157
+	STRING  shift 71
+	CHARCON  shift 156
+	#  shift 152
+	-  shift 158
+	(  shift 145
+	[  shift 153
+	.  error
+
+	Primary  goto 194
+	UnaryObjDesc  goto 193
+	UnaryExpr  goto 195
+	Literal  goto 143
+	Block  goto 144
+	VariableName  goto 196
+	CharacterConstant  goto 149
+	NumberConstant  goto 151
+	StringConstant  goto 150
+
+state 177
+	KeywordExpr :  BinaryObjDesc KeywordArgList_    (57)
+	KeywordArgList :  KeywordArgList_Keyword BinaryObjDesc 
+
+	KEYWORD  shift 48
+	.  reduce 57
+
+	Keyword  goto 197
+
+state 178
+	KeywordArgList :  Keyword_BinaryObjDesc 
+
+	IDENTIFIER  shift 6
+	DIGITS  shift 157
+	STRING  shift 71
+	CHARCON  shift 156
+	#  shift 152
+	-  shift 158
+	(  shift 145
+	[  shift 153
+	.  error
+
+	Primary  goto 194
+	UnaryObjDesc  goto 154
+	BinaryObjDesc  goto 198
+	UnaryExpr  goto 195
+	BinaryExpr  goto 199
+	Literal  goto 143
+	Block  goto 144
+	VariableName  goto 196
+	CharacterConstant  goto 149
+	NumberConstant  goto 151
+	StringConstant  goto 150
+
+state 179
+	NumberConstant :  - DIGITS_    (130)
+
+	.  reduce 130
+
+
+state 180
+	PrimMarker :  < KEYWORD NumberConstant >_    (22)
+
+	.  reduce 22
+
+
+state 181
+	CascadedMsgExpr :  CascadedMsgExpr CascadedMsg_    (40)
+
+	.  reduce 40
+
+
+state 182
+	CascadedMsg :  ; UnarySelector_    (41)
+
+	.  reduce 41
+
+
+state 183
+	CascadedMsg :  ; BinarySelector_UnaryObjDesc 
+
+	IDENTIFIER  shift 6
+	DIGITS  shift 157
+	STRING  shift 71
+	CHARCON  shift 156
+	#  shift 152
+	-  shift 158
+	(  shift 145
+	[  shift 153
+	.  error
+
+	Primary  goto 194
+	UnaryObjDesc  goto 200
+	UnaryExpr  goto 195
+	Literal  goto 143
+	Block  goto 144
+	VariableName  goto 196
+	CharacterConstant  goto 149
+	NumberConstant  goto 151
+	StringConstant  goto 150
+
+state 184
+	CascadedMsg :  ; KeywordArgList_    (43)
+	KeywordArgList :  KeywordArgList_Keyword BinaryObjDesc 
+
+	KEYWORD  shift 48
+	.  reduce 43
+
+	Keyword  goto 197
+
+state 185
+	Primary :  ( Expr )_    (47)
+
+	.  reduce 47
+
+
+state 186
+	Literal :  # ( ArrayMemberList_) 
+	ArrayMemberList :  ArrayMemberList_ArrayMember 
+
+	IDENTIFIER  shift 29
+	DIGITS  shift 157
+	KEYWORD  shift 171
+	STRING  shift 71
+	CHARCON  shift 156
+	DOUBLESPECIAL  shift 32
+	%  shift 43
+	|  shift 47
+	&  shift 44
+	?  shift 45
+	,  shift 46
+	+  shift 34
+	-  shift 210
+	/  shift 35
+	\\  shift 36
+	*  shift 37
+	~  shift 38
+	<  shift 39
+	>  shift 40
+	=  shift 41
+	@  shift 42
+	(  shift 209
+	)  shift 201
+	.  error
+
+	ArrayMember  goto 202
+	BinarySelector  goto 207
+	UnarySelector  goto 206
+	KeywordList  goto 208
+	CharacterConstant  goto 203
+	NumberConstant  goto 205
+	StringConstant  goto 204
+	SpecialCharacter  goto 31
+
+state 187
+	KeywordList :  KeywordList KEYWORD_    (103)
+
+	.  reduce 103
+
+
+state 188
+	Block :  [ BlockVariables StmtList_] 
+
+	]  shift 211
+	.  error
+
+
+state 189
+	Block :  [ BlockVariables ]_    (77)
+
+	.  reduce 77
+
+
+state 190
+	BlockVariables :  BlockVarList |_    (79)
+
+	.  reduce 79
+
+
+state 191
+	BlockVarList :  BlockVarList :_VariableName 
+
+	IDENTIFIER  shift 6
+	.  error
+
+	VariableName  goto 212
+
+state 192
+	BlockVarList :  : VariableName_    (80)
+
+	.  reduce 80
+
+
+state 193
+	UnaryExpr :  UnaryObjDesc_UnarySelector 
+	BinaryExpr :  BinaryObjDesc BinarySelector UnaryObjDesc_    (56)
+
+	IDENTIFIER  shift 29
+	.  reduce 56
+
+	UnarySelector  goto 175
+
+state 194
+	UnaryObjDesc :  Primary_    (51)
+
+	.  reduce 51
+
+
+state 195
+	UnaryObjDesc :  UnaryExpr_    (52)
+
+	.  reduce 52
+
+
+state 196
+	Primary :  VariableName_    (44)
+
+	.  reduce 44
+
+
+state 197
+	KeywordArgList :  KeywordArgList Keyword_BinaryObjDesc 
+
+	IDENTIFIER  shift 6
+	DIGITS  shift 157
+	STRING  shift 71
+	CHARCON  shift 156
+	#  shift 152
+	-  shift 158
+	(  shift 145
+	[  shift 153
+	.  error
+
+	Primary  goto 194
+	UnaryObjDesc  goto 154
+	BinaryObjDesc  goto 213
+	UnaryExpr  goto 195
+	BinaryExpr  goto 199
+	Literal  goto 143
+	Block  goto 144
+	VariableName  goto 196
+	CharacterConstant  goto 149
+	NumberConstant  goto 151
+	StringConstant  goto 150
+
+state 198
+	BinaryExpr :  BinaryObjDesc_BinarySelector UnaryObjDesc 
+	KeywordArgList :  Keyword BinaryObjDesc_    (58)
+
+	DOUBLESPECIAL  shift 32
+	%  shift 43
+	|  shift 47
+	&  shift 44
+	?  shift 45
+	,  shift 46
+	+  shift 34
+	-  shift 30
+	/  shift 35
+	\\  shift 36
+	*  shift 37
+	~  shift 38
+	<  shift 39
+	>  shift 40
+	=  shift 41
+	@  shift 42
+	.  reduce 58
+
+	BinarySelector  goto 176
+	SpecialCharacter  goto 31
+
+state 199
+	BinaryObjDesc :  BinaryExpr_    (55)
+
+	.  reduce 55
+
+
+state 200
+	CascadedMsg :  ; BinarySelector UnaryObjDesc_    (42)
+	UnaryExpr :  UnaryObjDesc_UnarySelector 
+
+	IDENTIFIER  shift 29
+	.  reduce 42
+
+	UnarySelector  goto 175
+
+state 201
+	Literal :  # ( ArrayMemberList )_    (63)
+
+	.  reduce 63
+
+
+state 202
+	ArrayMemberList :  ArrayMemberList ArrayMember_    (68)
+
+	.  reduce 68
+
+
+state 203
+	ArrayMember :  CharacterConstant_    (69)
+
+	.  reduce 69
+
+
+state 204
+	ArrayMember :  StringConstant_    (70)
+
+	.  reduce 70
+
+
+state 205
+	ArrayMember :  NumberConstant_    (71)
+
+	.  reduce 71
+
+
+state 206
+	ArrayMember :  UnarySelector_    (72)
+
+	.  reduce 72
+
+
+state 207
+	ArrayMember :  BinarySelector_    (73)
+
+	.  reduce 73
+
+
+208: shift/reduce conflict (shift 187, red'n 74) on KEYWORD
+state 208
+	ArrayMember :  KeywordList_    (74)
+	KeywordList :  KeywordList_KEYWORD 
+
+	KEYWORD  shift 187
+	.  reduce 74
+
+
+state 209
+	ArrayMember :  (_ArrayMemberList ) 
+	ArrayMemberList : _    (67)
+
+	.  reduce 67
+
+	ArrayMemberList  goto 214
+
+210: shift/reduce conflict (shift 179, red'n 104) on DIGITS
+state 210
+	BinarySelector :  -_    (104)
+	NumberConstant :  -_DIGITS 
+
+	DIGITS  shift 179
+	.  reduce 104
+
+
+state 211
+	Block :  [ BlockVariables StmtList ]_    (76)
+
+	.  reduce 76
+
+
+state 212
+	BlockVarList :  BlockVarList : VariableName_    (81)
+
+	.  reduce 81
+
+
+state 213
+	BinaryExpr :  BinaryObjDesc_BinarySelector UnaryObjDesc 
+	KeywordArgList :  KeywordArgList Keyword BinaryObjDesc_    (59)
+
+	DOUBLESPECIAL  shift 32
+	%  shift 43
+	|  shift 47
+	&  shift 44
+	?  shift 45
+	,  shift 46
+	+  shift 34
+	-  shift 30
+	/  shift 35
+	\\  shift 36
+	*  shift 37
+	~  shift 38
+	<  shift 39
+	>  shift 40
+	=  shift 41
+	@  shift 42
+	.  reduce 59
+
+	BinarySelector  goto 176
+	SpecialCharacter  goto 31
+
+state 214
+	ArrayMemberList :  ArrayMemberList_ArrayMember 
+	ArrayMember :  ( ArrayMemberList_) 
+
+	IDENTIFIER  shift 29
+	DIGITS  shift 157
+	KEYWORD  shift 171
+	STRING  shift 71
+	CHARCON  shift 156
+	DOUBLESPECIAL  shift 32
+	%  shift 43
+	|  shift 47
+	&  shift 44
+	?  shift 45
+	,  shift 46
+	+  shift 34
+	-  shift 210
+	/  shift 35
+	\\  shift 36
+	*  shift 37
+	~  shift 38
+	<  shift 39
+	>  shift 40
+	=  shift 41
+	@  shift 42
+	(  shift 209
+	)  shift 215
+	.  error
+
+	ArrayMember  goto 202
+	BinarySelector  goto 207
+	UnarySelector  goto 206
+	KeywordList  goto 208
+	CharacterConstant  goto 203
+	NumberConstant  goto 205
+	StringConstant  goto 204
+	SpecialCharacter  goto 31
+
+state 215
+	ArrayMember :  ( ArrayMemberList )_    (75)
+
+	.  reduce 75
+
+
+37/300 terminals, 53/300 nonterminals
+133/600 grammar rules, 216/750 states
+3 shift/reduce, 0 reduce/reduce conflicts reported
+53/350 working sets used
+memory: states,etc. 1089/24000, parser 269/12000
+109/600 distinct lookahead sets
+179 extra closures
+341 shift entries, 17 exceptions
+139 goto entries
+68 entries saved by goto default
+Optimizer space used: input 909/24000, output 501/12000
+501 table entries, 143 zero
+maximum spread: 262, maximum offset: 260

@@ -1,0 +1,498 @@
+.tp
+.po .5i
+.ll 7i
+.(l C
+\fB\s14Producer\s0\fP
+
+\fIFrom the Prototyping Laboratory to the Production Line
+Translating Smalltalk-80 Applications to Objective-C\fP
+
+Brad Cox, Ph.D.
+Productivity Products International
+Sandy Hook, CT 06497
+(203) 426 1875
+
+For presentation at OOPSLA/86
+.)C
+.(q
+.hl
+.ce
+\fIAbstract\fP
+.sp
+This paper proposes that source to source translation tools could provide
+a way of integrating the strengths of production programming environments
+like C/Unix with rapid prototyping environments like Smalltalk-80 into a
+comprehensive hybrid environment that spans more of the software development
+life-spiral than ever before. It describes a tool-assisted process for
+translating Smalltalk-80 programs into Objective-C, and shows how the
+tool is used in practice.
+.hl
+.)q
+.he 'Producer''
+.fo 'Productivity Products International'Page %'\*(td'
+.(f
+\fIObjective-C, Software-IC, Vici\fP and \fIPPI\fP are trademarks of 
+Productivity Products International.
+.)f
+.(f
+\fISmalltalk-80\fP is a trademark of Xerox Corporation.
+.)f
+.(f
+\fIUnix\fP is a trademark of AT&T.
+.)f
+.pp
+Smalltalk-80 and C/Unix are very different tools that are optimized for 
+different jobs at opposite ends of the process for transforming raw ideas
+into commercial software products. To use an analogy from automobile 
+manufacturing, Smalltalk-80 is at its best in the design shop for building 
+prototypes from which next year's model can be visualized, and C/Unix are at
+their best on the production line for building cost-effective implementations 
+once the design has been proven through prototyping.
+.pp
+However it is becoming increasingly harder to maintain a strict separation
+between prototyping and production. Many production systems, particularly
+in CAD and office automation, are providing features, like iconic user 
+interfaces, that grew up in prototyping environments and which depend 
+on experimentation and tuning for good human factors.  This kind of tuning
+is far easier in prototyping languages like Smalltalk-80, because machine
+resources can be spent lavishly on pervasive productivity aids like automatic
+garbage collection, and because the tools are tightly coupled to the system
+being constructed.
+.pp
+However the C/Unix community has historically favored a non-integrated 
+approach that keeps the product separate from the tools, and they commonly 
+exploit special purpose languages to amplify C's basic capabilities; 
+i.e. \fIyacc\fP for building parsers, \fIlex\fP for building lexical
+analyzers, \fItroff\fP for formating documents, \fImake\fP for controlling
+compilations, \fIadb\fP or \fIdbx\fP for debugging, and many others\**.
+So why not treat Smalltalk-80 as a special purpose tool for rapid 
+prototyping and ultimately translate the prototypes into C for
+production? This could eliminate the cradle to grave committment problem
+that has hindered Smalltalk's acceptance to date, and would integrate 
+the strengths of the two approaches into a comprehensive hybrid software 
+development environment.
+.(f
+\** Unix Programmers Manual. In particular see \fILex - A Lexical Analyzer 
+Generator\fP, and \fIYacc - Yet Another Compiler Compiler\fP. Also see \fILR
+Parsing\fP, Aho and Johnson, Computing Surveys, June, 1974.
+.)f
+.pp
+This article describes a tool-assisted process for translating Smalltalk-80
+applications into C language. The routine parts of the process are handled
+by a translation tool, \fIproducer\fP, which translates Smalltalk-80 code into
+Objective-C, an object-oriented extention to C language.  Obviously, it is
+not realistic to expect any tool to turn arbitrary half-baked prototypes
+into polished software products automatically. Nor can static analysis make
+perfectly accurate predictions about a program's dynamic behavior, such
+as the specific type a polymorphic variable will hold at run time or when
+it is safe to release storage that may be multiply referenced. This 
+information is not available in the text of a Smalltalk program and 
+deriving it by static analysis is a truly hard (NP-complete) problem. 
+This work sidesteps these problems by keeping the programmer involved in
+the translation process.
+.pp
+Translating code between languages as different as these is like designing
+a bridge. Although bridge builders often use generic tools and components,
+each bridge is custom designed to fit within a larger system of expressways,
+access roads, and approach ramps.  No part is designed in isolation, but in 
+combination to reduce the overall cost of the project.  Producer is not a
+bridge, but a component from which bridges can be assembled.  It need not
+solve the general problem of translating arbitrary Smalltalk-80 program into
+C with guaranteed reliablity, since the programmer can help by changing the
+source and target environments, by guiding the translation, or even by 
+repairing translation errors by hand. 
+
+.H "Background"
+This work was made feasible by several other PPI projects, all directed at
+the same goal; adapting concepts and tools that have been proven in the
+prototyping community for use in production programming.  The foundation
+is Objective-C language, which is implemented by a compiler that translates
+object-oriented constructs of Smalltalk-80 into expressions that can compiled
+by any C compiler.  The same language is also available in \fIVici\fP, an 
+interpreter that allows classes and ordinary C code to be developed, tested,
+and changed interactively by eliminating the usual edit, compile, link, and
+test cycle.
+.(f
+\** \fIObject-oriented Programming, An Evolutionary Approach\fP, Brad Cox,
+Addison Wesley, 1986.
+.)f
+.pp
+Both products make object-oriented programming available to production
+programmers. This make it possible for them to cooperate in building and
+reusing large libaries of pretested, documented classes that PPI 
+calls \fISoftware-ICs\fP to dramatize important parallels between 
+object-oriented programming and the invention of the integrated circuit
+chip, two technologies for packaging the efforts of suppliers for reuse
+by consumers. This provides the crucial missing element that has until 
+now prevented software developers from obtaining the explosive growth
+in productivity that hardware developers achieve routinely.
+.pp
+Several such libraries have been implemented.  Classes similar to Smalltalk's
+lower-level classes (Arrays, Collections, etc) have long been available\**, 
+.(f
+\** \fISoftware-IC Specification Sheets\fP, Objective-C Programmers 
+Reference Manual; PPI.
+.)f
+and a compatible library of user interface Software-ICs has recently been 
+developed in a form that is portable across the windowing environments of 
+most engineering workstations\**.
+.(f
+\** \fIObject-oriented Programming and Iconic User Interfaces\fP, 
+Bill Hunt (Hewlett Packard) and Brad Cox (PPI), Byte Magazine, August 1986.
+.)f
+Other projects\** have developed additional features of the Smalltalk 
+substrate, including an (optional) automatic garbage collector.
+.(f
+\** Unpublished; Frank Parish (Hewlett Packard) and Alan Watt (PPI).
+.)f
+.pp
+These libraries provide the substrate needed to build an eventual Unix-based
+environment that has many Smalltalk-like features such as an interactive
+browser for developing, describing, learning about, and using large 
+collections of ordinary C code and/or Software-ICs.  Although this will 
+make programming with C and/or Objective-C more productive, it is by design
+an environment for production programming and will not eliminate the need
+for Smalltalk-80 as a specialized prototyping environment.
+
+.H "Prototyping versus Production Programming"
+When a line of Smalltalk-80 code works correctly, it has successfully met
+several layers of requirements imposed by the Smalltalk-80 language, its
+run-time environment, and the programmer who wrote it. In transforming it
+into Objective-C code, it must meet similar requirements of the target
+language, environment, and programmer.  These requirement layers amount
+to progressively higher hurdles over which the code must be carried:
+.np
+Syntactic: The first hurdle involves converting syntactically valid 
+Smalltalk-80 statements to syntactically valid Objective-C statements.
+This can be done with simple tools that are concerned only the syntax of
+the two programming \fIlanguages\fP.
+.np
+Semantic: The second hurdle involves preserving the meaning of the code,
+when executed in the Smalltalk-80 environment, when it has been transformed
+for execution in the Objective-C environment. This requires knowledge of
+the two \fIenvironments\fP.
+.np
+Intentional: This is a coined term that signifies transforming code that
+reflects the intentions of the prototype builder to meet the intentions of
+one building a system for production.  This requires knowledge of the
+intentions of the \fIprogrammers\fP themselves, or more practically,
+their direct involvement in one or more stages of the translation.
+.pp
+Since Objective-C's object-oriented capabilities were modeled directly 
+after Smalltalk's, message expressions can be translated one for one
+into Objective-C messages.  However this is of so little practical interest
+that it has never been attempted.  After passing each of the Smalltalk
+classes through such a translator, implementing the entire Smalltalk 
+virtual machine, and installing an automatic garbage collector, the 
+translated code would have the vices of both languages and the virtues
+of neither.  It would run no faster and it would be just as incompatible
+with other Unix tools.  To be of practical interest, the translation 
+process must also provide a way of providing correctness at each one of
+the other levels; syntactic, semantic, and intentional. This is hard to
+do automatically, but relatively easy if the programmer is involved 
+in the translation.
+.pp
+For example, a Smalltalk-80 prototype might conceivably compose statements
+as data and compile them for execution on the fly. Although Objective-C is
+designed primarily as a language to be compiled in advance of program
+execution, several options are available for translating these prototypes. 
+The programmer might choose to incorporate \fIVici\fP into the target system,
+as this would reduce labor costs at the source side. Or he might decide
+to modify the prototype to avoid this feature to provide better execution 
+speed on the target side.  Similarly, Smalltalk-80 implements low-level 
+types like points (coordinates) as dynamically-bound objects, and this 
+allows higher level code to be independent of whether points are represented
+as integers or floating point numbers. Objective-C's user interface library 
+removes this freedom in favor of greater machine efficiency. Should a
+Smalltalk program rely on polymorphic points, its programmer could choose 
+between developing a different user interface library that does use
+polymorphic points, changing the prototype to avoid the problem, or
+accepting a certain proportion of errors in the translation to be repaired
+by hand. No translation is impossible; some just cost more than others.
+
+.H "Producer"
+The automatic part of a translation involves a tool named `producer'.  Producer
+is basically a Smalltalk-80 compiler that generates Objective-C code, but it
+differs from most compilers in that it can also accept additional information 
+to guide how code will be generated. If this information is not provided,
+producer translates Smalltalk-80 statements into Objective-C code in a
+straightforward, non-rigorous manner. For example, it will translate each
+Smalltalk message expression to a syntactically equivalent Objective-C
+expression, but it translates literal constants into primitive C types and
+does nothing special to ensure that the code generated from Smalltalk
+block expressions is syntactically legal.
+.pp
+Producer is implemented in Objective-C and other Unix tools.  Its lexical
+analyzer, written in \fIlex\fP, composes characters into tokens and delivers 
+them to the parser, written in \fIyacc\fP. The parser recognizes syntactic 
+components of the Smalltalk-80 language and executes Objective-C statements 
+that build a syntax tree bottom-up as instances of syntactic classes like 
+Method, Message, and Identifier. Some of these classes eliminate minor 
+syntactic incompatibilities by rewriting the tree. For example, the Expr
+(expression) class eliminates cascaded message expressions by adding temporary
+variables to the nearest enclosing scope and builds the tree as a sequence 
+of simple message expressions.
+.pp
+As a refinement, the lexer accumulates every token in a list that can be
+printed just before the code generation pass as an Objective-C comment.
+This preserves the original Smalltalk statements and comments in the 
+generated code.  Code generation begins when the grammar recognizes a 
+method or class declaration and sends the top of the syntax tree (an
+instance of Method or Class) the message, \fIgen\fP. The method class 
+implements this message by first requesting its subnodes to determine 
+their types, a recursive process that involves rule processing and type
+inferencing.  Then it begins code generation by generating tokens that
+Objective-C will recognize as a method declaration and requests its
+subnodes to do likewise.
+.pp
+In principle, translation rules could be attached to any syntactic class,
+but currently only the Method, Message, and Identifier classes provide the
+necessary hooks. Rules are typically provided in separate files that are 
+read before the source to be translated and are parsed by special grammar
+productions.  Identifier rules declare the type of specific identifiers and
+can optionally assign a new spelling for each identifier in the generated
+code.  Most often, declarations are provided only for instance variables 
+and method arguments since these generally provide sufficient information 
+that types of other variables (method and block local variables) can be
+inferred from how they are used.
+.pp
+The Message class provides a more elaborate kind of hook that allows more
+than one translation to be associated with each selector (a similar hook
+exists in the Method class).  The specific translation for such messages
+is chosen according to typing information that can be derived from several 
+sources. The type of literal constants is derived automatically, and types 
+of variables are determined by declarative rules provided by the programmer 
+and also by type inferencing rules that are built into producer. The argument
+or receiver of one message is often another message expression, whose type
+depends on the type of its arguments, and so on recursively.  Currently,
+translations for messages are chosen according to the selector and the
+type of the message's receiver and arguments (forward reasoning), but this 
+may be extended to also consider how the result of the translated message 
+is used (backward reasoning).
+.pp
+Blocks are translated via the usual message translation rules, triggered 
+by arguments of type BLOCK. While many blocks can be translated as
+as C conditional statements and expressions (if, for, while, etc),
+elaborate blocks cannot be translated in this way.  If experience
+demonstrates the need, more ambitious translations can be added,
+such as rewriting block bodies as C function bodies.
+
+.H "Results"
+The current implementation of producer consists of 1804 lines of Objective-C
+code, 223 of which are also processed by yacc and 105 by lex. Only three
+man-weeks have been invested, two in developing producer and producing
+the results shown here and the other in writing this paper. To date,
+translations have been verified by desk checking, but it should be possible
+to show translated applications in operation by the time this paper is
+presented.
+.pp
+The group that developed Smalltalk-80 has produced a video tape that Xerox
+uses to promote sales of Smalltalk systems. The tape concludes with a 
+animation of three shapes bouncing in a rectangular enclosure; a circle, a
+rotating star, and a square that shows the area near the cursor. The tape
+was filmed on a Dorado, a relatively powerful computer, but the same program
+is also available on less expensive machines like the Tektronix Artificial 
+Intelligence Workstation, which is based on the same Motorola 68010 chip
+as the Sun workstations used in most of our work. This program was chosen
+to demonstrate the translation process in action.
+.pp
+The animation application involves 236 lines of Smalltalk code. Its source
+environment is the standard Smalltalk-80 environment, and the goal is to
+translate it to run in a target environment that is defined by the 
+Objective-C user interface library.  This environment involves three 
+layers of abstraction:
+.np
+The substrate layer includes the primitive data types of the C compiler,
+Unix, and the proprietary windowing environments of diverse workstation
+vendors, and is therefore not part of the library. The library confines
+itself to building user interfaces to run in virtual terminals provided
+by the windowing environment.
+.np
+The DisplayObjects level duplicates the functionality of the Smalltalk 
+graphics environment insofar as this has been described publically\**.
+It provides a Form class whose instances hold rectangular raster images 
+in memory, a DisplayScreen class (a subclass of Form) whose instances
+provide an object-oriented interface to a virtual terminal, and a number
+of specialized subclasses like InfiniteForm, OpaqueForm, Cursor, and Sensor.
+The classes and methods in this library are essentially identical to 
+Smalltalk's, but they assume that objects below the level of class Rectangle
+are primitive types of the substrate; e.g. Points, Numbers, Booleans, and 
+so forth.
+.(f
+\** Goldberg and Robson's \fISmalltalk-80: The language and its
+implementation\fP
+.)f
+.np
+The UserInterface level is similar to, but does not duplicate, the Smalltalk
+Interface-Framework classes that implement the model/view/controller (MVC) user 
+interface paradigm. This level of the library is not compatible, partially
+because MVC seems unnecessarily complicated, but primarily to avoid any
+appearance of violating Xerox copyright protection on concepts that are
+documented only in Smalltalk-80 sources. Unless this restriction can be
+lifted, the only recourse may be to code prototypes to use a new Smalltalk
+library written to parallel the Objective-C library.
+.pp
+The DisplayObjects level also defines a statically typed implementation 
+of the Point (coordinate) class as a collection of C macros and functions:
+.(C
+typedef struct { short x, y; } PT;\**	// aPoint
+.)C
+This trades the advantages of polymorphic points to gain machine efficiency 
+and compatibility with other tools in the target environment; particularly 
+vendor-supplied windowing environments. And managing low level objects like
+points by value instead of by reference reduces the need for automatic
+garbage collection significantly.
+.(f
+\** Since many C compilers implement structure assignment inefficiently,
+the library coerces this type such that points are passed to and returned
+from functions as integers rather than as structures. This is why the x
+portion of aPoint is accessed as X(aPoint) rather than aPoint.x.
+.)f
+.pp
+The translation for this application involves 796 lines of rules, 735 of
+which are generic rules that describe low-level Smalltalk objects (Booleans,
+Numbers, etc) and 61 of which are application-specific rules that describe
+types in the animation application. The following is a typical translation:
+.(C
+// MovingNode subclass: #BounceInBoxNode
+//	instanceVariableNames: ''
+//	classVariableNames: ''
+//	poolDictionaries: ''
+//	category: 'Graphics-Animation'!
+
+#include "st80.h"
+= BounceInBoxNode:MovingNode CATEGORIES() { }
+
+// !BounceInBoxNode methodsFor: 'display'!
+// displayOn: destForm at: aDisplayPoint clippingBox: clipRectangle rule: 
+//	ruleInteger mask: aForm
+//	| relLoc |
+//	super displayOn: destForm at: aDisplayPoint clippingBox: clipRectangle 
+//		rule: ruleInteger mask: aForm.
+//	relLoc \(<- location + clipRectangle origin.
+//	(velocity x < 0 and: [relLoc x < clipRectangle left])
+//		ifTrue: [velocity \(<- velocity*(-1@1)].
+//	(velocity x > 0 and: [(relLoc x+contents width) > clipRectangle right])
+//		ifTrue: [velocity \(<- velocity*(-1@1)].
+//	(velocity y < 0 and: [relLoc y < clipRectangle top])
+//		ifTrue: [velocity \(<- velocity*(1@-1)].
+//	(velocity y > 0 and: [(relLoc y+contents height) > clipRectangle bottom])
+//		ifTrue: [velocity \(<- velocity*(1@-1)].
+- displayOn:destForm at:(PT)aDisplayPoint clipBy:clipRectangle rule:(int)ruleInteger mask:aForm {
+	PT relLoc;
+	[super displayOn:destForm at:aDisplayPoint clipBy:clipRectangle rule:ruleInteger mask:aForm];
+	relLoc = ptPlus(location, [clipRectangle origin]);
+	if (X(velocity) < 0 && X(relLoc) < [clipRectangle left])
+			velocity = ptTimes(velocity, pt(-1,1));
+	if (X(velocity) > 0 && X(relLoc) + [contents width] > [clipRectangle right])
+			velocity = ptTimes(velocity, pt(-1,1));
+	if (Y(velocity) < 0 && Y(relLoc) < [clipRectangle top])
+			velocity = ptTimes(velocity, pt(1,-1));
+	if (Y(velocity) > 0 && Y(relLoc) + [contents height] > [clipRectangle bottom])
+			velocity = ptTimes(velocity, pt(1,-1));
+	return self;
+}
+.)C
+.pp
+The original Smalltalk statements are shown in the comments preceeding each
+block of translated code. The translation of the first few lines in the method
+were influenced primarily by rules from a file of application-specific 
+information, of which three are shown here:
+.(C
+{ # location (PT) location }
+{ # velocity (PT) velocity }
+{ (id)displayOn:(id) at:(PT) clippingBox:(id) rule:(int) mask:(id) #
+	(id) [displayOn:%1 at:(PT)%2 clipBy:%3 rule:(int)%4 mask:%5] }
+.)C
+The two instance variables, location and velocity, were inherited from
+another application-specific class, PositionNode. The first two rules
+declare that they are both of type PT (Point) and should be translated 
+without change in spelling. The third rule specifies that methods and 
+messages whose selector is displayOn:at:clippingBox:rule:mask: and whose
+receiver and arguments type id, id, PT, id, int and id respectively,
+should be translated into a message with the modified selector
+displayOn:at:clipBy:rule:mask: and with argument types and positions 
+as denoted in the right hand part of the rule. No declaration was provided
+for the local variable relLoc, so its type was inferred from the type of 
+the first statement that assigns it a value, namely
+.(C
+relLoc \(<- location + clipRectangle origin.
+.)C
+The translation of this statement was determined by two rules from a
+different file of generic rules about low-level Smalltalk-80 objects.
+.(C
+{ # (PT) [origin] }
+{ (PT)+ (PT) # (PT)'ptPlus(%0, %1)' }
+.)C
+The first rule denotes that the origin message, applied to an receiver
+of any type, returns a Point, and the second that the + message sent to
+an receiver of type Point with an argument of the same type translates 
+as a call on the C function ptPlus which returns a value of type PT.
+.pp
+Currently, producer does nothing special for blocks, aside from giving them
+a unique type (BLOCK) that can be tested by ordinary message rules. For
+example, the `if' statements were produced by such a rule:
+.(C
+{ ifTrue:(BLOCK) # (STMT)'if (%0) %1' }
+.)C
+
+.H "Conclusions"
+The primary conclusion that can be drawn from the results to date is that
+small Smalltalk applications that do not lean heavily on complex features
+of the Smalltalk environment can be translated to Objective-C with remarkably
+little trouble. Only two man-weeks sufficed to build a reasonably effective
+translation tool and a generic collection of rules that could translate a
+263 line Smalltalk program into Objective-C with only 61 lines of application
+specific information.  Once the application is operational, it may be
+possible to draw additional conclusions about the overall merit of the
+translation concept, for example by comparing the animation example's 
+performance before and after translation.
+.pp
+This work has also identified several limitations in how the translation
+program is currently implemented, but it is too early to know whether they
+are serious enough to warrant fixing. For example, the scheme used for
+handling Smalltalk-80 block expressions works primarily because of
+serendipity, not because Smalltalk blocks are equivalent to any construct
+that C provides. Experience may prove that Smalltalk-80 programmers
+usually use blocks just as C programmers use simple conditional statements,
+in which case there would be little need for anything more elaborate,
+particularly since misses are automatically flagged as syntax errors when 
+the generated code is compiled and could be repaired by hand. A number of
+more elaborate schemes are also available, up to and including a direct
+implementation of Smalltalk's scheme, and it is too soon to say which of
+these will prove sufficient.
+.pp
+Several limitations have been identified in how rules are currently processed.
+The fundamental restriction is that rules can only define data which is
+interpreted by hard-coded logic, so it is not possible to write rules that
+recognize and translate entities larger than an individual message expression.
+For example, the current scheme could not eliminate wasteful Smalltalk idioms
+like `Form under' by replacing the message with a constant, because this
+would involve examining not only the type of the message's receiver, but
+also its name. For much the same reason, it could not eliminate the 
+unnecessary function call in the body of the first `if' statement by
+translating it to:
+.(C
+X(velocity) *= -1;\**
+.)C
+.(f
+\** X() and Y() are C macros, not functions. They are L-values and can be
+used as the target of assignment statements.
+.)f
+If this restriction proves too limiting in practice, it could be relieved
+by incorporating a general-purpose rule interpreter such as Prolog.
+.pp
+There are a number of smaller problems that should certainly be repaired.
+Currently, rules have global scope and they should instead be attached to 
+specific classes, methods, or blocks to provide finer control over how 
+identifier spellings and types are assigned. Identifier rules should be 
+organized into a type hierarchy, and types should be compared by something 
+more sophisticated than mere equality of their names. These enhancements 
+would increase the modularity and generality of the translation rules, but 
+would not influence the range of translations that producer can perform.
+.pp
+The final result is that we have received the encouragement that we need
+to pursue this idea further. Translation does appear to be a viable way
+of integrating the best of two worlds into a comprehensive hybrid 
+programming environment that spans a much larger segment of the 
+software development life-spiral than ever before.

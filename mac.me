@@ -1,0 +1,86 @@
+.\" Must be defined externally
+.\" \nN		Chapter Number
+.po .5i
+.ll 7i
+.nr % 1
+.ds NM \\nN
+.de H
+.	tm .H0 \\*(NM-\\n% "\\$1"
+.	sp
+.(l C
+\\s12\\fB\\$1\\fP\\s0
+.)l
+.	pp
+..
+.de H1
+.	tm .H1 \\*(NM-\\n% "\\$1"
+.	uh "\\$1"
+.	pp
+..
+.de H2
+.	tm .H2 \\*(NM-\\n% "\\$1"
+.	uh "\\$1"
+..
+.de M
+.	tm .M \\*(NM-\\n% "\\$1"
+.	uh "\\$1"
+..
+.de MC
+.	tm .MC \\*(NM-\\n% "\\$1"
+.	uh "\\$1"
+..
+.de (C
+.	(l
+.	sz -2n
+.	ls 1
+.	ta .25i +.25i +.25i +.25i +.25i +.25i +.25i +.25i +.25i +.25i +.25i +.25i
+..
+.de )C
+.	ta
+.	ls 2
+.	sz
+.	)l
+..
+.nr fn 1
+.ds F \*(NM-1
+.de (F
+.	ds F \\*(NM-\\n(fn
+.	tm .F \\*(NM-\\n% "Figure \\*F: \\$1"
+.	(l M F
+.	hl
+.	sp
+.	ce
+\fIFigure \\*F:\fP \\$1
+..
+.de )F
+.	hl
+.	)l
+.	nr fn +1
+.	ds F \\*(NM-\\n(fn
+..
+.de (N
+.	(q
+\\fINOTE IN DRAFT: \\$1\\fP
+..
+.de )N
+.	)q
+..
+.de NT
+.	(q
+\\fINOTE IN DRAFT: \\$1\\fP
+.	)q
+.	tm .NT \\*(NM-\\n% "NOTE: \\$1"
+..
+.de C
+.nr N \\$1
+.ds NA \\$1
+.he ''\\*(NA''
+.fo 'Brad Cox'%'\\*(td'
+.(l C
+\\s14\\fB\\$2\\fP\\s0
+.sp 2
+.)l
+.he ''\\*(NA''
+.tm .C \\nN-\\n% "\\$2"
+.pp
+..

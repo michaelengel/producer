@@ -1,0 +1,59 @@
+Smalltalk Syntax consists of
+	identifiers
+	literal constants
+	message expressions
+		Return type
+		Argument types
+
+Literal constant typing is explicit from context
+	Integer
+	Floating Point
+	String
+	Character
+
+Identifier type inferencing
+	Identifier name transformation: How to specify scope of change?
+	The type of each identifier is the type of the first assignment.
+	Instance variables: generate declaration at tail of file after
+		assignments have provided a type for each?
+	Inherited variables: do these appear in methods of Smalltalk 
+		subclasses?
+
+Message expression type inferencing
+	(int) do:(TYPE) this:(TYPE) to:(TYPE) that:(TYPE)
+	Return type and argument types are taken from category files
+		after performing any message name transforms
+
+Method type inferencing
+	When Objective-C method exists by the same name, use types from
+		that
+	Otherwise the type is determined after inferencing variable types.
+
+Static polymorphism
+	When translation of messages should depend on the (static) type of
+	the receiver; e.g.
+		(10@20) extent:(30@40) -> [Rectangle origin:pt(10,20) extent:(30@40)]
+		aRectangle extent:(30@40) -> [Rectangle extent:pt(30@40)]
+	or
+		aPoint x 				-> X(aPoint)
+		aRectangle origin 		-> aRectangle->origin
+		aRectangle left			-> L(aRectangle)
+	or better yet
+		2 + 3					-> 2+3
+		2.3 + 4.8				-> 2.3 + 4.8
+		aPoint + anotherPoint 	-> ptPlus(aPoint, anotherPoint)
+		aPoint + 3				-> ptPlusInt(aPoint, 3)
+
+Notation:
+	ReceiverType MessageExpression -> ReturnType FormatString
+	\________Source_____________/	  \______Target_________/
+		Default:
+			ReceiverType:			matches id
+			ReturnType:				id
+			FormatString:			message expression
+
+	Examples:
+	(int)+(int)						-> $1 + $2
+	(float)+(float)					-> $1 + $2
+	(PT)+(PT)						-> ptPlus($1, $2)
+	(PT)+(int)						-> ptPlusInt($1, $2)
